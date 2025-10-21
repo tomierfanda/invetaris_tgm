@@ -33,5 +33,9 @@ RUN php artisan route:cache
 # Expose port 9000 (Railway handle port sendiri)
 EXPOSE 9000
 
-# Jalankan PHP-FPM & auto migrate
-CMD ["sh", "-c", "php artisan migrate --force && php-fpm"]
+# Copy script start.sh
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Start container pakai start.sh
+CMD ["sh", "/usr/local/bin/start.sh"]
