@@ -6,7 +6,7 @@ WORKDIR /var/www/html
 
 # Install dependencies sistem
 RUN apt-get update && apt-get install -y \
-    git unzip libzip-dev libpng-dev libonig-dev libcurl4-openssl-dev curl \
+    git unzip libzip-dev libpng-dev libonig-dev libcurl4-openssl-dev curl nginx \
     && docker-php-ext-install pdo_mysql mbstring zip gd \
     && apt-get clean
 
