@@ -1,4 +1,8 @@
 #!/bin/sh
 
 echo "Starting PHP-FPM..."
-php-fpm
+# Start PHP-FPM
+php-fpm &
+
+# Start Nginx
+nginx -g "daemon off;"
