@@ -3,8 +3,13 @@ services:
     name: invetaris-laravel
     env: php
     buildCommand: |
-      apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev zip unzip
+      apt-get update && apt-get install -y \
+        libpng-dev \
+        libjpeg-dev \
+        libfreetype6-dev \
+        libzip-dev \
+        zip unzip
       docker-php-ext-configure gd --with-freetype --with-jpeg
       docker-php-ext-install gd zip
-      composer install --optimize-autoloader --no-scripts --no-interaction --ignore-platform-req=ext-gd --ignore-platform-req=ext-zip
+      composer install --optimize-autoloader --no-scripts --no-interaction
     startCommand: php artisan serve --host 0.0.0.0 --port $PORT
