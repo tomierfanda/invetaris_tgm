@@ -1,0 +1,34 @@
+Laravel Git Ignore
+
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.testing
+
+Laravel IDE Helper
+
+.phpstorm.meta.php
+_ide_helper.php
+
+Composer
+
+composer.lock
+
+Directories
+
+/public/build
+/public/css/vendor.css
+/public/js/vendor.js
+/public/mix-manifest.json
+/public/hot
+
+macOS files
+
+.DS_Store
+
+Windows files
+
+Thumbs.db
