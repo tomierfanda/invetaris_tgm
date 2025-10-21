@@ -18,5 +18,8 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php \
     && php composer.phar install --no-dev --optimize-autoloader --no-interaction
 
-# Jalankan Laravel server
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
+# Expose port (bisa override lewat .env)
+EXPOSE 8080
+
+# Jalankan Laravel server pakai port dari ENV atau default 8080
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${APP_PORT:-8080}"]
