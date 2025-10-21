@@ -1,32 +1,22 @@
 # Gunakan PHP-FPM 8.2 resmi
 FROM php:8.2-fpm
 
-# Set working directory
 WORKDIR /var/www/html
 
 # Install dependencies sistem
 RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libzip-dev \
-    libpng-dev \
-    libonig-dev \
-    libcurl4-openssl-dev \
-    curl \
+    git unzip libzip-dev libpng-dev libonig-dev libcurl4-openssl-dev curl \
     && docker-php-ext-install pdo_mysql mbstring zip gd \
     && apt-get clean
 
-# Copy composer.lock dan composer.json dulu untuk caching
-COPY composer.lock composer.json ./
+# Copy seluruh source code **dulu**
+COPY . .
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install dependencies PHP
 RUN composer install --no-dev --optimize-autoloader --no-interaction
-
-# Copy seluruh source code
-COPY . .
 
 # Buat folder storage dan bootstrap/cache, lalu set permission
 RUN mkdir -p storage/framework storage/logs bootstrap/cache public/storage
@@ -42,5 +32,5 @@ RUN php artisan route:cache
 # Expose port 9000 untuk PHP-FPM
 EXPOSE 9000
 
-# Entry point: auto-migrate & run PHP-FPM
-CMD ["sh", "-c", "php artisan migrate --force && php-fpm"]
+# Jalankan PHP-FPM
+CMD ["php-fpm"]
