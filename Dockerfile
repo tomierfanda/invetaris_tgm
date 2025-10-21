@@ -33,6 +33,9 @@ RUN php artisan route:cache
 # Expose port 9000 (Railway handle port sendiri)
 EXPOSE 9000
 
+# Copy nginx config
+COPY nginx.conf /etc/nginx/sites-available/default
+
 # Copy script start.sh
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
