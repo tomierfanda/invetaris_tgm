@@ -242,9 +242,9 @@ class ServeCommand extends Command
             [, $port] = $this->getHostAndPort();
         }
 
-        $port = $port ?: env('APP_PORT', 8000);
-    
-    return (int) $port + $this->portOffset;
+        $port = $port ?: 8000;
+
+        return $port + $this->portOffset;
     }
 
     /**
