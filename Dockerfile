@@ -1,25 +1,29 @@
-# Gunakan image PHP bawaan yang sudah stabil
-FROM php:8.2-cli
+# 1. Base image PHP + extensions
+FROM php:8.2-fpm
 
-# Install dependensi sistem dan ekstensi PHP yang dibutuhkan Laravel + phpspreadsheet
+# Install dependencies sistem + PHP extensions Laravel + phpspreadsheet
 RUN apt-get update && apt-get install -y \
     zip unzip git libzip-dev libpng-dev libonig-dev libxml2-dev libjpeg-dev libfreetype6-dev \
+    nginx curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql zip gd
 
-# Set workdir ke /app
-WORKDIR /app
+# Set workdir
+WORKDIR /var/www/html
 
-# Copy semua file project ke dalam container
+# Copy source code
 COPY . .
 
-# Install composer dan dependencies
+# Install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php \
     && php composer.phar install --no-dev --optimize-autoloader --no-interaction
 
-# Expose port (bisa override lewat .env)
+# Copy Nginx config
+COPY ./docker/nginx/default.conf /etc/nginx/sites-available/default
+
+# Expose port Railway
 EXPOSE 8080
 
-# Jalankan Laravel server pakai port dari ENV atau default 8080
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${APP_PORT:-8080}"]
+# Start PHP-FPM + Nginx
+CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
