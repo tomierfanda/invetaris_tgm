@@ -16,9 +16,9 @@
         }
 
         .card-print {
-            max-width: 500px;
+            max-width: 600px;
             margin: 40px auto;
-            padding: 20px;
+            padding: 20px 30px;
             border-radius: 15px;
             border: 1px solid #dee2e6;
             background-color: #ffffff;
@@ -27,50 +27,48 @@
 
         .header-print {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            justify-content: space-between;
+            margin-bottom: 25px;
         }
 
         .header-print img {
             max-height: 60px;
         }
 
-        .header-print .header-text {
-            text-align: right;
+        .header-text-center {
+            flex: 1;
+            text-align: center;
             font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .content-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .info-section {
+            flex: 1;
         }
 
         .barcode-box {
             text-align: center;
-            margin-top: 10px;
+            width: 150px;
         }
 
         .barcode-box img {
+            max-width: 100%;
             max-height: 150px;
             margin-top: 10px;
         }
 
         .info-item {
             display: flex;
-            justify-content: space-between;
-            padding: 2px 0;
-            font-size: 0.95rem;
-        }
-
-        .info-item span:first-child {
-            font-weight: 600;
-        }
-
-        .btn-print {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .info-item {
-            display: flex;
             align-items: center;
-            margin-bottom: 8px; /* spasi antar baris */
+            margin-bottom: 8px;
+            font-size: 0.95rem;
         }
 
         .label {
@@ -80,44 +78,51 @@
 
         .value {
             flex: 1;
-            padding-left: 10px; /* spasi antar label & value */
+            padding-left: 10px;
         }
 
+        .btn-print {
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 <div class="card-print">
-    <!-- Header logo + instansi -->
+    <!-- Header -->
     <div class="header-print">
         <img src="{{ asset('assets/images/damkar.png') }}" alt="Logo Damkar">
         <div class="header-text-center">
             <strong>Dinas Pemadam Kebakaran dan Penyelamatan</strong><br>
-             Kabupaten Tanggamus <br>
+            Kabupaten Tanggamus
         </div>
     </div>
 
-    <!-- Nama & Type -->
-    <div class="info-item">
-        <span class="label">Nama Barang :</span>
-        <span class="value">{{ $inventaris->nama_barang }}</span>
-    </div>
-    <div class="info-item">
-        <span class="label">Type Barang &nbsp;:</span>
-        <span class="value">{{ $inventaris->merk_type ?? '-' }}</span>
-    </div>
-    <div class="info-item">
-        <span class="label">Nomor Label &nbsp;:</span>
-        <span class="value">{{ $inventaris->nomor_lebelisasi }}</span>
-    </div>
+    <!-- Konten: Kiri info, kanan barcode -->
+    <div class="content-box">
+        <div class="info-section">
+            <div class="info-item">
+                <span class="label">Nama Barang :</span>
+                <span class="value">{{ $inventaris->nama_barang }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Type Barang :</span>
+                <span class="value">{{ $inventaris->merk_type ?? '-' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Nomor Label :</span>
+                <span class="value">{{ $inventaris->nomor_lebelisasi }}</span>
+            </div>
+        </div>
 
-    <!-- Barcode -->
-    <div class="barcode-box">
         @if ($inventaris->barcode_path)
-            <img src="{{ asset($inventaris->barcode_path) }}" alt="Barcode">
+        <div class="barcode-box">
+            <img src="{{ asset($inventaris->barcode_path) }}" alt="Barcode" width="100px">
+        </div>
         @endif
     </div>
 
-    <!-- Print / Kembali -->
+    <!-- Tombol -->
     <div class="btn-print no-print">
         <button onclick="window.print()" class="btn btn-success">🖨️ Cetak</button>
         <a href="{{ route('inventaris.index') }}" class="btn btn-secondary">Kembali</a>

@@ -8,7 +8,7 @@ use App\Models\Inventaris;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
-use Milon\Barcode\DNS1D;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class InventarisController extends Controller
 {
@@ -35,7 +35,6 @@ class InventarisController extends Controller
 
         $data = array_merge($request->all(), $validated);
 
-        // Upload foto lokasi jika ada
         if ($request->hasFile('foto_lokasi')) {
             $path = $request->file('foto_lokasi')->store('foto_lokasi', 'public');
             $data['foto_lokasi'] = $path;
@@ -43,38 +42,33 @@ class InventarisController extends Controller
 
         $inventaris = Inventaris::create($data);
 
-        try {
-            $d = new DNS1D();
-            $barcodeDir = storage_path('app/public/storage/barcodes/');
-            $filename = $inventaris->nomor_lebelisasi . '.png';
+    try {
+        $qrDir = storage_path('app/public/qrcodes/');
+        if (!file_exists($qrDir)) {
+            mkdir($qrDir, 0755, true);
+        }
 
-            // Pastikan folder barcodes ada
-            if (!file_exists($barcodeDir)) {
-                mkdir($barcodeDir, 0755, true);
-            }
+        $filename = $inventaris->nomor_lebelisasi . '.svg'; // ubah ke SVG biar ringan
+        $qrContent = url('/inventaris/' . $inventaris->id);
 
-            // Buat isi barcode = link langsung ke detail inventaris
-            $barcodeContent = url('/inventaris/' . $inventaris->id);
+        // Paksa pakai backend SVG biar gak butuh imagick
+        QrCode::format('svg')
+            ->size(300)
+            ->margin(2)
+            ->generate($qrContent, $qrDir . $filename);
 
-            // Tangkap output barcode ke buffer
-            ob_start();
-            echo $d->getBarcodePNG($barcodeContent, 'C39');
-            $barcode = ob_get_clean();
+        $inventaris->update([
+            'barcode_path' => 'storage/qrcodes/' . $filename,
+        ]);
 
-            // Simpan hasil ke file
-            file_put_contents($barcodeDir . $filename, $barcode);
-
-            // Update path ke database
-            $inventaris->update([
-                'barcode_path' => 'storage/barcodes/' . $filename
-            ]);
-
-            } catch (\Exception $e) {
-                Log::error('Gagal generate barcode untuk Inventaris ID ' . $inventaris->id . ': ' . $e->getMessage());
-            }
-
-        return redirect()->route('inventaris.index')->with('success', 'Data berhasil disimpan');
+        Log::info('✅ QR Code berhasil dibuat (SVG): ' . $qrDir . $filename);
+    } catch (\Exception $e) {
+        Log::error('❌ Gagal generate QR Code untuk Inventaris ID ' . $inventaris->id . ': ' . $e->getMessage());
     }
+
+    return redirect()->route('inventaris.index')->with('success', 'Data berhasil disimpan');
+}
+
 
 
     public function show($id)

@@ -12,23 +12,50 @@ class InventarisExport implements FromCollection, WithHeadings
     {
         return Inventaris::select(
             'nomor_lebelisasi',
-            'nama_barang',
             'kode_barang',
+            'nama_barang',
+            'nomor_register',
+            'merk_type',
+            'ukuran_cc',
+            'bahan',
             'tahun_pembelian',
-            'barcode_path',
-            'foto_lokasi'
+            'nomor_pabrik',
+            'nomor_rangka',
+            'nomor_mesin',
+            'nomor_polisi',
+            'nomor_bpkb',
+            'asal_usul',
+            'harga',
+            'kondisi_simda',
+            'kondisi_saat_ini',
+            'keberadaan',
+            'keterangan'
         )->get();
     }
 
-    public function headings(): array
+   public function headings(): array
     {
         return [
             'Nomor Label',
-            'Nama Barang',
             'Kode Barang',
+            'Nama Barang',
+            'Nomor Register',
+            'Merk/Type',
+            'Ukuran/CC',
+            'Bahan',
             'Tahun Pembelian',
-            'Barcode Path',
-            'Foto Lokasi',
+            'Nomor Pabrik',
+            'Nomor Rangka',
+            'Nomor Mesin',
+            'Nomor Polisi',
+            'Nomor BPKB',
+            'Asal Usul',
+            'Harga',
+            'Kondisi (SIMDA)',
+            'Kondisi Saat Ini',
+            'Keberadaan',
+            'Keterangan',
         ];
     }
+
 }
