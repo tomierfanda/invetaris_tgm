@@ -36,6 +36,7 @@ RUN php artisan route:clear || true
 
 # Buat folder storage & bootstrap/cache, lalu set permission
 RUN mkdir -p storage/framework storage/logs bootstrap/cache public/storage && \
+    chmod -R 775 storage bootstrap/cache public/storage && \
     chown -R www-data:www-data storage bootstrap/cache public/storage
 
 # Cache config & route (setelah artisan bisa diakses)
